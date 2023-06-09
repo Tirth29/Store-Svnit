@@ -16,6 +16,10 @@ import Profile from "./Screens/Profile";
 import UpdateProfile from "./Screens/UpdateProfile";
 import ChangePassword from "./Screens/ChangePassword";
 import Orders from "./Screens/Orders";
+import AdminPanel from "./Admin/AdminPanel";
+import Category from "./Admin/Category";
+import AdminOrders from "./Admin/AdminOrders";
+import UpdateProduct from "./Admin/UpdateProduct";
 
 const Stack = createNativeStackNavigator();
 
@@ -33,17 +37,23 @@ const Main = () => {
             options={{ headerShown: false }}
           />
           <Stack.Screen name="productdetails" component={ProductDetails} />
-            <Stack.Screen name="cart" component={Cart} />
-            <Stack.Screen name="confirmorder" component={ConfirmOrder} />
-            <Stack.Screen name="payment" component={Payment} />
-            <Stack.Screen name="login" component={Login} />
-            <Stack.Screen name="signup" component={Signup} />
-            <Stack.Screen name="verify" component={Verify} />
-            <Stack.Screen name="forgetpassword" component={ForgetPassword} />
-            <Stack.Screen name="changepassword" component={ChangePassword} />
-            <Stack.Screen name="profile" component={Profile} />
-            <Stack.Screen name="updateprofile" component={UpdateProfile} />
-            <Stack.Screen name="orders" component={Orders} />
+          <Stack.Screen name="cart" component={Cart} />
+          <Stack.Screen name="confirmorder" component={ConfirmOrder} />
+          <Stack.Screen name="payment" component={Payment} />
+          <Stack.Screen name="login" component={Login} />
+          <Stack.Screen name="signup" component={Signup} />
+          <Stack.Screen name="profile" component={Profile} />
+          <Stack.Screen name="updateprofile" component={UpdateProfile} />
+          <Stack.Screen name="orders" component={Orders} />
+          {/* password related route */}
+          <Stack.Screen name="verify" component={Verify} />
+          <Stack.Screen name="changepassword" component={ChangePassword} />
+          <Stack.Screen name="forgetpassword" component={ForgetPassword} />
+          {/* admin route */}
+          <Stack.Screen name="adminpanel" component={AdminPanel} />
+          <Stack.Screen name="categories" component={Category} />
+          <Stack.Screen name="updateproducts" component={UpdateProduct} />
+          <Stack.Screen name="adminorders" component={AdminOrders} />
         </Stack.Group>
       </Stack.Navigator>
       <Toast position="top" topOffset={40} />

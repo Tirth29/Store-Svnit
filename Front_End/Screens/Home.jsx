@@ -8,6 +8,69 @@ import ProductCard from "../Components/ProductCard";
 import { useNavigation } from "@react-navigation/native";
 import Footer from "../Components/Footer";
 import Heading from "../Components/Heading";
+export const products = [
+  {
+    price: 2422,
+    name: "Sample1",
+    _id: "adv1",
+    stock: 23,
+    category:"Laptop",
+    images: [
+      {
+        url: "https://picsum.photos/seed/picsum/200/300",
+      },
+    ],
+  },
+  {
+    price: 2422,
+    name: "Sample1",
+    _id: "adv11",
+    stock: 23,
+    category:"Phone",
+    images: [
+      {
+        url: "https://picsum.photos/seed/picsum/200/300",
+      },
+    ],
+  },
+  {
+    price: 2422,
+    name: "Sample1",
+    _id: "adv111",
+    stock: 23,
+    category:"efqaeefqewas",
+    images: [
+      {
+        url: "https://picsum.photos/seed/picsum/200/300",
+      },
+    ],
+  },
+  {
+    price: 2422,
+    name: "Sample1",
+    _id: "adv1111",
+    stock: 23,
+    category:"efefqewas",
+    images: [
+      {
+        url: "https://picsum.photos/seed/picsum/200/300",
+      },
+    ],
+  },
+  {
+    price: 24222,
+    name: "Sample2",
+    _id: "adv2",
+    stock: 23,
+    category:"efefqes",
+    images: [
+      {
+        url: "https://picsum.photos/seed/picsum/200/300",
+      },
+    ],
+  },
+];
+
 const Home = () => {
   const categories = [
     { category: "abc", _id: "adc10" },
@@ -22,31 +85,6 @@ const Home = () => {
     { category: "abc", _id: "adc1" },
   ];
 
-  const products = [
-    {
-      price: 2422,
-      name: "Sample1",
-      _id: "adv1",
-      stock: 23,
-      images: [
-        {
-          url: "https://picsum.photos/seed/picsum/200/300",
-        },
-      ],
-    },
-    {
-        price: 24222,
-        name: "Sample2",
-        _id: "adv2",
-        stock: 23,
-        images: [
-          {
-            url: "https://picsum.photos/seed/picsum/200/300",
-          },
-        ],
-      },
-  ];
-
   const [category, setCategory] = useState("");
   const [activeSearch, setActiveSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -57,10 +95,10 @@ const Home = () => {
     setActiveSearch((prev) => !prev);
   };
   const addToCartHandler = (id) => {
-    console.log("Add to cart ",id);
+    console.log("Add to cart ", id);
   };
 
-  const navigate = useNavigation()
+  const navigate = useNavigation();
 
   return (
     <>
@@ -136,17 +174,17 @@ const Home = () => {
         <View style={{ flex: 1 }}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {products.map((item, index) => (
-                <ProductCard
-                  stock={item.stock}
-                  name={item.name}
-                  price={item.price}
-                  images={item.images}
-                  addToCartHandler={addToCartHandler}
-                  id={item._id}
-                  key={item._id}
-                  i={index}
-                  navigate={navigate}
-                />
+              <ProductCard
+                stock={item.stock}
+                name={item.name}
+                price={item.price}
+                images={item.images}
+                addToCartHandler={addToCartHandler}
+                id={item._id}
+                key={item._id}
+                i={index}
+                navigate={navigate}
+              />
             ))}
           </ScrollView>
         </View>
