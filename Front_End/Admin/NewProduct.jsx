@@ -9,13 +9,14 @@ import {
 } from "../Styles/styles";
 import { Header } from "react-native/Libraries/NewAppScreen";
 import Loader from "../Components/Loader";
-import { Button, TextInput } from "react-native-paper";
+import { Avatar, Button, TextInput } from "react-native-paper";
 import SelectComponent from "../Components/SelectComponent";
+import { TouchableOpacity } from "react-native";
 
-const UpdateProduct = ({ navigation, route }) => {
+const NewProduct = ({ navigation, route }) => {
   const loading = false;
   const loadingOther = false;
-  const [id] = useState(route.params.id);
+  const [image, setImage] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
@@ -24,20 +25,20 @@ const UpdateProduct = ({ navigation, route }) => {
   const [categoryID, setCategoryID] = useState("");
   const [categories, setCategories] = useState([
     {
-        _id:"abc",
-        category:"Laptop",
+      _id: "abc",
+      category: "Laptop",
     },
     {
-        _id:"a",
-        category:"Laptop1",
+      _id: "a",
+      category: "Laptop1",
     },
     {
-        _id:"ac",
-        category:"Laptop2",
+      _id: "ac",
+      category: "Laptop2",
     },
     {
-        _id:"bc",
-        category:"Laptop3",
+      _id: "bc",
+      category: "Laptop3",
     },
   ]);
   const [visible, setVisible] = useState(false);
@@ -52,7 +53,7 @@ const UpdateProduct = ({ navigation, route }) => {
       >
         <Header back={true} />
         <View style={{ maerginTop: 70, marginBottom: 20 }}>
-          <Text style={formHeading}>Update Product</Text>
+          <Text style={formHeading}>New Product</Text>
         </View>
         {loading ? (
           <Loader />
@@ -72,6 +73,42 @@ const UpdateProduct = ({ navigation, route }) => {
                 images: [],
               }}
             >
+              <View
+                style={{
+                  width: 80,
+                  height: 80,
+                  alignSelf: "center",
+                  marginBottom: 20,
+                }}
+              >
+                <Avatar.Image
+                  size={80}
+                  style={{
+                    backgroundColor: colors.color1,
+                  }}
+                  source={{
+                    uri: image ? image : null,
+                  }}
+                />
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate("camera", { newProduct: true })
+                  }
+                >
+                  <Avatar.Icon
+                    icon={"camera"}
+                    size={30}
+                    color={colors.color3}
+                    style={{
+                      backgroundColor: colors.color2,
+                      position: "absolute",
+                      bottom: 0,
+                      right: -5,
+                    }}
+                  />
+                </TouchableOpacity>
+              </View>
+
               <Button
                 onPress={() => navigation.navigate("productimages", { id })}
               >
@@ -94,23 +131,16 @@ const UpdateProduct = ({ navigation, route }) => {
               <TextInput
                 {...inputOptions}
                 placeholder="Price"
-                keyboardType="default"
+                keyboardType="number-pad"
                 value={price}
                 onChangeText={setPrice}
               />
               <TextInput
                 {...inputOptions}
                 placeholder="Stock"
-                keyboardType="default"
                 value={stock}
                 onChangeText={setStock}
-              />
-              <TextInput
-                {...inputOptions}
-                placeholder="Name"
-                keyboardType="default"
-                value={name}
-                onChangeText={setName}
+                keyboardType="number-pad"
               />
               <Text
                 style={{
@@ -133,7 +163,7 @@ const UpdateProduct = ({ navigation, route }) => {
                 loading={loadingOther}
                 disabled={loadingOther}
               >
-                Update
+                Create 
               </Button>
             </View>
           </ScrollView>
@@ -150,4 +180,4 @@ const UpdateProduct = ({ navigation, route }) => {
   );
 };
 
-export default UpdateProduct;
+export default NewProduct;

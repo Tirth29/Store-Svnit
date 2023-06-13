@@ -20,6 +20,7 @@ import AdminPanel from "./Admin/AdminPanel";
 import Category from "./Admin/Category";
 import AdminOrders from "./Admin/AdminOrders";
 import UpdateProduct from "./Admin/UpdateProduct";
+import NewProduct from "./Admin/NewProduct";
 
 const Stack = createNativeStackNavigator();
 
@@ -52,8 +53,9 @@ const Main = () => {
           {/* admin route */}
           <Stack.Screen name="adminpanel" component={AdminPanel} />
           <Stack.Screen name="categories" component={Category} />
-          <Stack.Screen name="updateproducts" component={UpdateProduct} />
+          <Stack.Screen name="updateproduct" component={UpdateProduct} />
           <Stack.Screen name="adminorders" component={AdminOrders} />
+          <Stack.Screen name="newproducts" component={NewProduct} />
         </Stack.Group>
       </Stack.Navigator>
       <Toast position="top" topOffset={40} />
