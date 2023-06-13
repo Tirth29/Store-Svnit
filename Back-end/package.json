@@ -7,7 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "set NODE_ENV=Development&& nodemon server.js",
-    "start": " node server.js"
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC",
@@ -25,5 +25,8 @@
     "nodemailer": "^6.9.3",
     "stripe": "^12.9.0",
     "validator": "^13.9.0"
+  },
+  "engines": {
+    "node": ">=14.20.1"
   }
 }
