@@ -1,6 +1,5 @@
 import express from "express";
-// import { isAuthenticated } from '../middleware/auth.js';
-// import { singleUpload } from '../middleware/multer.js';
+import { getCategoryProduct } from "../controllers/product.js";
 import {
   addCategory,
   addProduct,
@@ -20,6 +19,7 @@ import { singleUpload } from "../middleware/multer.js";
 const router = express.Router();
 
 router.get("/all", getAllProduct);
+router.get("/getcategory",getCategoryProduct);
 router.get("/admin",isAuthenticated, isAdmin, getAdminProduct);
 router
   .route("/single/:id")

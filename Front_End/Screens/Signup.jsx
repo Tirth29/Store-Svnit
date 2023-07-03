@@ -10,10 +10,10 @@ import {
 } from "../Styles/styles";
 import { Avatar, Button, TextInput } from "react-native-paper";
 import Footer from "../Components/Footer";
-// import mime from "mime";
-// import { useDispatch } from "react-redux";
-// import { register } from "../redux/actions/userActions";
-// import { useMessageAndErrorUser } from "../utils/hooks";
+import mime from "mime";
+import { useDispatch } from "react-redux";
+import { register } from "../Redux/Actions/UserAction";
+import { useMessageAndErrorUser } from "../Utils/hooks";
 
 const Signup = ({ navigation, route }) => {
   const [avatar, setAvatar] = useState("");
@@ -25,38 +25,38 @@ const Signup = ({ navigation, route }) => {
   const [country, setCountry] = useState("");
   const [pinCode, setPinCode] = useState("");
 
-//   const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const disableBtn =
     !name || !email || !password || !address || !city || !country || !pinCode;
 
-//   const submitHandler = () => {
-//     const myForm = new FormData();
+  const submitHandler = () => {
+    const myForm = new FormData();
 
-//     myForm.append("name", name);
-//     myForm.append("email", email);
-//     myForm.append("password", password);
-//     myForm.append("address", address);
-//     myForm.append("city", city);
-//     myForm.append("country", country);
-//     myForm.append("pinCode", pinCode);
+    myForm.append("name", name);
+    myForm.append("email", email);
+    myForm.append("password", password);
+    myForm.append("address", address);
+    myForm.append("city", city);
+    myForm.append("country", country);
+    myForm.append("pinCode", pinCode);
 
-//     if (avatar !== "") {
-//       myForm.append("file", {
-//         uri: avatar,
-//         type: mime.getType(avatar),
-//         name: avatar.split("/").pop(),
-//       });
-//     }
+    if (avatar !== "") {
+      myForm.append("file", {
+        uri: avatar,
+        type: mime.getType(avatar),
+        name: avatar.split("/").pop(),
+      });
+    }
 
-//     dispatch(register(myForm));
-//   };
+    dispatch(register(myForm));
+  };
 
-//   const loading = useMessageAndErrorUser(navigation, dispatch, "profile");
+  const loading = useMessageAndErrorUser(navigation, dispatch, "profile");
 
-//   useEffect(() => {
-//     if (route.params?.image) setAvatar(route.params.image);
-//   }, [route.params]);
+  useEffect(() => {
+    if (route.params?.image) setAvatar(route.params.image);
+  }, [route.params]);
   return (
     <>
       <View style={defaultStyle}>
@@ -139,11 +139,11 @@ const Signup = ({ navigation, route }) => {
             />
 
             <Button
-            //   loading={loading}
+              loading={loading}
               textColor={colors.color2}
               disabled={disableBtn}
               style={styles.btn}
-            //   onPress={submitHandler}
+              onPress={submitHandler}
             >
               Sign Up
             </Button>

@@ -1,47 +1,21 @@
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import Header from "../Components/Header";
 import Heading from "../Components/Heading";
 import { colors, defaultStyle } from "../Styles/styles";
 import ConfirmOrderItem from "../Components/ConfirmOrderItem";
 import { Button } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
-// import {cartItems} from "./Cart"
-// import {CartItems} from "./Cart";
+import { useSelector } from "react-redux";
 
-const CartItems = [
-  {
-      name:"adafa",
-      image:"https://picsum.photos/seed/picsum/200/300",
-      product:"uiheoefnbwcenrqebowenbcxw",
-      stock: "5",
-      price:32134,
-      quantity:2,
-  },
-  {
-      name:"adafa",
-      image:"https://picsum.photos/seed/picsum/200/300",
-      product:"uiheoefnbwcenrthrbowenbcxw",
-      stock: "5",
-      price:32134,
-      quantity:2,
-  },
-  {
-      name:"adafa",
-      image:"https://picsum.photos/seed/picsum/200/300",
-      product:"uiheoefnbwcenrbergowenbcxw",
-      stock: "5",
-      price:32134,
-      quantity:2,
-    },
-  ]
 
 const ConfirmOrder = () => {
-  const itemPrice = 40000;
-  const shippingCharge = 50;
-  const tax = 0.18 * itemPrice;
-  const totalAmount = itemPrice + shippingCharge + tax;
   const navigate = useNavigation();
+  const {cartItems} = useSelector((state)=>state.cart)
+  const [itemsPrice] = useState(cartItems.reduce((prev,curr)=>prev +curr.quantity*curr.price,0))
+  const [shippingCharges]=useState(itemsPrice<10000 ? 0 : 200);
+  const [tax] = useState(Number((itemsPrice*0.18).toFixed()));
+  const [totalAmount] = useState(itemsPrice + shippingCharges + tax);
 
   return (
     <View
@@ -64,7 +38,7 @@ const ConfirmOrder = () => {
         }}
         >
         <ScrollView>
-          {CartItems.map((i) => (
+          {cartItems.map((i) => (
             <ConfirmOrderItem
             key={i.product}
             price={i.price}
@@ -75,13 +49,11 @@ const ConfirmOrder = () => {
           ))}
         </ScrollView>
       </View>
-      <PriceTag heading={"subtotal"} value={itemPrice} />
-      <PriceTag heading={"shipping"} value={shippingCharge} />
-      <PriceTag heading={"tax"} value={tax} />
-      <PriceTag heading={"total"} value={totalAmount} />
-      <TouchableOpacity
- 
-      >
+      <PriceTag heading={"Subtotal"} value={itemsPrice} />
+      <PriceTag heading={"Shipping Chrge"} value={shippingCharges} />
+      <PriceTag heading={"Tax"} value={tax} />
+      <PriceTag heading={"Total Amount"} value={totalAmount}/>
+      <TouchableOpacity>
         <Button
           style={{
             backgroundColor: colors.color3,
@@ -93,8 +65,8 @@ const ConfirmOrder = () => {
           // icon={"chervon-right"}
           onPress={() =>
             navigate.navigate("payment", {
-              itemPrice,
-              shippingCharge,
+              itemsPrice,
+              shippingCharges,
               tax,
               totalAmount,
             })
@@ -118,7 +90,7 @@ const PriceTag = ({heading, value}) => (
     }}
   >
     <Text style={{ fontWeight: 800 }}>{heading}</Text>
-    <Text>{value}</Text>
+    <Text>₹{value}</Text>
   </View>
 );
 

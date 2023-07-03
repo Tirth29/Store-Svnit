@@ -84,7 +84,7 @@ import { Avatar, Button } from "react-native-paper";
 import  Toast  from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
 import { useIsFocused } from "@react-navigation/native";
-// import { getProductDetails } from "../redux/actions/productAction";
+import { getProductDetails } from "../Redux/Actions/ProductAction";
 
 const SLIDER_WIDTH = Dimensions.get("window").width;
 const ITEM_WIDTH = SLIDER_WIDTH;
@@ -99,38 +99,15 @@ export const iconOptions = {
 };
 
 const ProductDetails = ({ route: { params } }) => {
-  // const {
-  //   product: { name, price, stock, description, images },
-  // } = useSelector((state) => state.product);
+  const {
+    product: { name, price, stock, description, images },
+  } = useSelector((state) => state.product);
 
-  const images = [
-    {
-      id:"afa",
-      url:"https://picsum.photos/seed/picsum/200/300",
-    },
-    {
-      id:"afa1",
-      url:"https://picsum.photos/seed/picsum/200/300",
-    },
-    {
-      id:"afa2",
-      url:"https://picsum.photos/seed/picsum/200/300",
-    },
-    {
-      id:"afa3",
-      url:"https://picsum.photos/seed/picsum/200/300",
-    },
-  ];
-
-  const name= "abcdefghijklmnopqrstuvwxyz";
-  const price = 12345;
-  const stock= 10;
-  const description = "lorem ipsum d  poster  velit  abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz ";
   
   const isCarousel = useRef(null);
   const [quantity, setQuantity] = useState(1);
-  // const dispatch = useDispatch();
-  // const isFocused = useIsFocused();
+  const dispatch = useDispatch();
+  const isFocused = useIsFocused();
 
   const incrementQty = () => {
     if (stock <= quantity)
@@ -147,37 +124,37 @@ const ProductDetails = ({ route: { params } }) => {
 
   const addToCardHandler = () => {
     if (stock === 0)
-    // try{
+    try{
 
       return Toast.show({
         type: "error",
         text1: "Out Of Stock",
       });
-    // }
-      // catch(err){
-      //   console.log(err);
-      // }
+    }
+      catch(err){
+        console.log(err);
+      }
       console.log("Added to card",quantity);
-  //   dispatch({
-  //     type: "addToCart",
-  //     payload: {
-  //       product: params.id,
-  //       name,
-  //       price,
-  //       image: images[0]?.url,
-  //       stock,
-  //       quantity,
-  //     },
-  //   });
+    dispatch({
+      type: "addToCart",
+      payload: {
+        product: params.id,
+        name,
+        price,
+        image: images[0]?.url,
+        stock,
+        quantity,
+      },
+    });
     Toast.show({
       type: "success",
       text1: "Added To Cart",
     });
   };
 
-  // useEffect(() => {
-  //   dispatch(getProductDetails(params.id));
-  // }, [dispatch, params.id, isFocused]);
+  useEffect(() => {
+    dispatch(getProductDetails(params.id));
+  }, [dispatch, params.id, isFocused]);
 
   return (
     <View
@@ -269,7 +246,7 @@ const ProductDetails = ({ route: { params } }) => {
               <Avatar.Icon icon={"minus"} {...iconOptions} />
             </TouchableOpacity>
 
-            <Text style={style.quantity}>{stock}</Text>
+            <Text style={style.quantity}>{quantity}</Text>
 
             <TouchableOpacity
              onPress={incrementQty}

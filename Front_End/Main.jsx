@@ -1,5 +1,5 @@
 import { View, Text } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "./Screens/Home";
@@ -21,10 +21,18 @@ import Category from "./Admin/Category";
 import AdminOrders from "./Admin/AdminOrders";
 import UpdateProduct from "./Admin/UpdateProduct";
 import NewProduct from "./Admin/NewProduct";
+import ProductImages from "./Admin/ProductImages";
+import CameraComponent from "./Screens/Camera";
+import { useDispatch } from "react-redux";
+import { loadUser } from "./Redux/Actions/UserAction";
 
 const Stack = createNativeStackNavigator();
 
 const Main = () => {
+  const dispatch = useDispatch();
+  useEffect(()=>{
+    dispatch(loadUser());
+  },[dispatch]);
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -46,6 +54,7 @@ const Main = () => {
           <Stack.Screen name="profile" component={Profile} />
           <Stack.Screen name="updateprofile" component={UpdateProfile} />
           <Stack.Screen name="orders" component={Orders} />
+          <Stack.Screen name="camera" component={CameraComponent} />
           {/* password related route */}
           <Stack.Screen name="verify" component={Verify} />
           <Stack.Screen name="changepassword" component={ChangePassword} />
@@ -55,7 +64,8 @@ const Main = () => {
           <Stack.Screen name="categories" component={Category} />
           <Stack.Screen name="updateproduct" component={UpdateProduct} />
           <Stack.Screen name="adminorders" component={AdminOrders} />
-          <Stack.Screen name="newproducts" component={NewProduct} />
+          <Stack.Screen name="newproduct" component={NewProduct} />
+          <Stack.Screen name="productimages" component={ProductImages} />
         </Stack.Group>
       </Stack.Navigator>
       <Toast position="top" topOffset={40} />

@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   colors,
   defaultImg,
@@ -11,17 +11,26 @@ import ButtonBox from "../Components/ButtonBox";
 import Footer from "../Components/Footer";
 import Loader from "../Components/Loader";
 import { StatusBar } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import { loadUser, logout } from "../Redux/Actions/UserAction";
+import {
+  useMessageAndErrorOther,
+  useMessageAndErrorUser,
+} from "../Utils/hooks";
+import mime from "mime";
+import { useIsFocused } from "@react-navigation/native";
+import { updatePic } from "../Redux/Actions/OtherAction";
 
-const users = {
-  name: "John",
-  email: "john@example.com",
-};
-const loading = false;
-const Profile = ({ navigation }) => {
-  const [avatar, setAvatar] = useState("");
+const Profile = ({ navigation,route }) => {
+  const [avatar, setAvatar] = useState(defaultImg);
+  const dispatch = useDispatch();
+  const loading = useMessageAndErrorUser(navigation, dispatch, "login");
+  const { user } = useSelector((state) => state.user);
   const logoutHandler = () => {
-    console.log("logout");
+    dispatch(logout());
   };
+  const loadingPic = useMessageAndErrorOther(dispatch, null, null, loadUser);
+  const isFocused = useIsFocused();
   const navigateHandler = (text) => {
     switch (text) {
       case "Admin":
@@ -45,13 +54,37 @@ const Profile = ({ navigation }) => {
         break;
     }
   };
+
+  
+  useEffect(()=>{
+    if(route.params?.image){
+      setAvatar(route.params.image);
+      const myform = new FormData();
+      myform.append("file",{
+        uri:route.params.image,
+        type:mime.getType(route.params.image),
+        name:route.params.image.split("/").pop(),
+      })
+      dispatch(updatePic(myform))
+    }
+    dispatch(loadUser());
+  },[route.params,dispatch,isFocused]);
+
+  useEffect(() => {
+    if (user?.avatar) {
+      setAvatar(user.avatar.url);
+    }
+  }, [user]);
+  
   return (
     <>
-      <View style={{
+      <View
+        style={{
           padding: 35,
           paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
           backgroundColor: colors.color2,
-      }}>
+        }}
+      >
         {/* heading  */}
         <View
           style={
@@ -71,7 +104,7 @@ const Profile = ({ navigation }) => {
             <View style={styles.container}>
               <Avatar.Image
                 source={{
-                  uri: defaultImg,
+                  uri: avatar,
                 }}
                 size={100}
                 style={{
@@ -82,25 +115,39 @@ const Profile = ({ navigation }) => {
                 onPress={() =>
                   navigation.navigate("camera", { updateProfile: true })
                 }
+                disabled={loadingPic}
               >
-                <Button textColor={colors.color1}>Change Photo</Button>
+                <Button
+                  textColor={colors.color1}
+                  disabled={loadingPic}
+                  loading={loadingPic}
+                >
+                  Change Photo
+                </Button>
               </TouchableOpacity>
-              <Text style={styles.name}>{users?.name}</Text>
+              <Text style={styles.name}>{user?.name}</Text>
               <Text
                 style={{
                   fontWeight: 300,
                   backgroundColor: colors.color2,
+                  paddingRight:10,
+                  paddingLeft:10,
+                  paddingTop:3,
+                  paddingBottom:3,
+                  borderRadius:10,
                 }}
               >
-                {users?.email}
+                {user?.email}
               </Text>
             </View>
-            <View>
+            <View style={{
+              marginTop:20,
+            }} >
               <View
                 style={{
                   flexDirection: "row",
                   margin: 10,
-                  justifyContent: "space-between",
+                  justifyContent: "space-evenly",
                 }}
               >
                 <ButtonBox
@@ -108,12 +155,14 @@ const Profile = ({ navigation }) => {
                   text={"Orders"}
                   icon={"cart"}
                 />
-                <ButtonBox
-                  handler={navigateHandler}
-                  text={"Admin"}
-                  icon={"view-dashboard"}
-                  reverse={true}
-                />
+                {user?.role === "admin" && (
+                  <ButtonBox
+                    handler={navigateHandler}
+                    text={"Admin"}
+                    icon={"view-dashboard"}
+                    reverse={true}
+                  />
+                )}
                 <ButtonBox
                   handler={navigateHandler}
                   text={"Profile"}
@@ -158,8 +207,10 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 20,
     fontWeight: "500",
-    marginTop: 10,
+    marginTop: 5,
     color: colors.color2,
+    textTransform: "uppercase",
+    marginBottom: 10,
   },
 });
 

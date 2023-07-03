@@ -6,90 +6,12 @@ import Header from "../Components/Header";
 import Loader from "../Components/Loader";
 import { Headline } from "react-native-paper";
 import OrderItem from "../Components/OrderItem";
-
-export const orders = [
-  {
-    _id: "1",
-    shippingInfo: {
-      address: "K.P park-2",
-      city: "Kosamba",
-      country: "India",
-      pincode: 394120,
-    },
-    created_at: "12-12-2015",
-    orderStatus: "Processing",
-    paymentMethode: "COD",
-    totalAmount: 20101,
-  },
-  {
-    _id: "12",
-    shippingInfo: {
-      address: "K.P park-2",
-      city: "Kosamba",
-      country: "India",
-      pincode: 394120,
-    },
-    created_at: "12-12-2015",
-    orderStatus: "Processing",
-    paymentMethode: "COD",
-    totalAmount: 20101,
-  },
-  {
-    _id: "123s",
-    shippingInfo: {
-      address: "K.P park-2",
-      city: "Kosamba",
-      country: "India",
-      pincode: 394120,
-    },
-    created_at: "12-12-2015",
-    orderStatus: "Processing",
-    paymentMethode: "COD",
-    totalAmount: 20101,
-  },
-  {
-    _id: "12d3",
-    shippingInfo: {
-      address: "K.P park-2",
-      city: "Kosamba",
-      country: "India",
-      pincode: 394120,
-    },
-    created_at: "12-12-2015",
-    orderStatus: "Processing",
-    paymentMethode: "COD",
-    totalAmount: 20101,
-  },
-  {
-    _id: "12w3",
-    shippingInfo: {
-      address: "K.P park-2",
-      city: "Kosamba",
-      country: "India",
-      pincode: 394120,
-    },
-    created_at: "12-12-2015",
-    orderStatus: "Processing",
-    paymentMethode: "COD",
-    totalAmount: 20101,
-  },
-  {
-    _id: "123q",
-    shippingInfo: {
-      address: "K.P park-2",
-      city: "Kosamba",
-      country: "India",
-      pincode: 394120,
-    },
-    created_at: "12-12-2015",
-    orderStatus: "Processing",
-    paymentMethode: "COD",
-    totalAmount: 20101,
-  },
-];
+import { useIsFocused } from "@react-navigation/native";
+import { useGetOrders } from "../Utils/hooks";
 
 const Orders = () => {
-  const loading = false;
+  const isFocused = useIsFocused();
+  const { loading, orders } = useGetOrders(isFocused);
   return (
     <View style={defaultStyle}>
       {/* header  */}
@@ -114,12 +36,13 @@ const Orders = () => {
                   key={item._id}
                   id={item._id}
                   i={index}
+                  cname={item.user}
                   price={item.totalAmount}
                   status={item.orderStatus}
-                  paymentMethod={item.paymentMethode}
-                  orderedOn={item.created_at.split("T")[0]}
-                  address={`${item.shippingInfo.address}, ${item.shippingInfo.city}, ${item.shippingInfo.country}, ${item.shippingInfo.pincode}`}
-                  admin={true}
+                  paymentMethod={item.paymentMethod}
+                  orderedOn={item.createdAt.split("T")[0]}
+                  address={`${item.shippingInfo.address}, ${item.shippingInfo.city}, ${item.shippingInfo.country}, ${item.shippingInfo.pinCode}`}
+                  admin={false}
                 />
               ))
             ) : (

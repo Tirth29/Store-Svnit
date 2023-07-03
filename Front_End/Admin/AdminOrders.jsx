@@ -5,11 +5,20 @@ import Header from "../Components/Header";
 import OrderItem from "../Components/OrderItem";
 import Loader from "../Components/Loader";
 import { orders } from "../Screens/Orders";
+import { useIsFocused } from "@react-navigation/native";
+import { useGetOrders, useMessageAndErrorOther } from "../Utils/hooks";
+import { Headline } from "react-native-paper";
+import { processOrder } from "../Redux/Actions/OtherAction";
+import { useDispatch } from "react-redux";
 
-const AdminOrders = () => {
-    const loading = false;
-    const processOrderLoading = false;
-    const updateHandler = () => {};
+const AdminOrders = ({navigation}) => {
+  const isFocused = useIsFocused();
+  const dispatch = useDispatch();
+    const {loading, orders } = useGetOrders(isFocused,true);
+    const processOrderLoading = useMessageAndErrorOther(dispatch , navigation , "adminpanel");
+    const updateHandler = (id) => {
+      dispatch(processOrder(id))
+    };
   return (
     <View
       style={{
@@ -39,9 +48,9 @@ const AdminOrders = () => {
                   i={index}
                   price={item.totalAmount}
                   status={item.orderStatus}
-                  paymentMethod={item.paymentMethode}
-                  orderedOn={item.created_at.split("T")[0]}
-                  address={`${item.shippingInfo.address}, ${item.shippingInfo.city}, ${item.shippingInfo.country}, ${item.shippingInfo.pincode}`}
+                  paymentMethod={item.paymentMethod}
+                  orderedOn={item.createdAt.split("T")[0]}
+                  address={`${item.shippingInfo.address}, ${item.shippingInfo.city}, ${item.shippingInfo.country}, ${item.shippingInfo.pinCode}`}
                   admin={true}
                   updateHandler={updateHandler}
                   loading={processOrderLoading}

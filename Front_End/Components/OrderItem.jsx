@@ -1,12 +1,14 @@
 import { View, Text, StyleSheet } from "react-native";
-import React from "react";
+import React,{useEffect, useState} from "react";
 import { colors } from "../Styles/styles";
 import { Button } from "react-native-paper";
+const API_ENDPOINT = "https://e-commerce-server-a619.up.railway.app/api/v1/user"
 
-const OrderItem = ({
+const OrderItem = async({
   id,
   price,
   address,
+  cname,
   orderedOn,
   status,
   paymentMethod,
@@ -15,6 +17,23 @@ const OrderItem = ({
   loading,
   i = 0,
 }) => {
+  const [cuname, setCuname] = useState('');
+
+  useEffect(() => {
+    const fetchUserName = async () => {
+      try {
+        const response = await axios.get(`${API_ENDPOINT}/${cname}`);
+        const { name } = response.data;
+        setCuname(name);
+      } catch (error) {
+        console.error('Error retrieving user:', error);
+        // Handle error state or display a message to the user
+      }
+    };
+
+    fetchUserName();
+  }, [cname]);
+
   return (
     <View
       style={{
@@ -31,6 +50,7 @@ const OrderItem = ({
       >
         ID:#{id}
       </Text>
+      <TextBox title={"Customer Name"} value={cuname} i={i} />
       <TextBox title={"Address"} value={address} i={i} />
       <TextBox title={"Ordered On"} value={orderedOn} i={i} />
       <TextBox title={"Price"} value={price} i={i} />

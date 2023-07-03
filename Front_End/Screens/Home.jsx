@@ -1,140 +1,117 @@
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
-import React, { useState, activeRoute } from "react";
-import { colors, defaultStyle } from "../Styles/styles";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import React, { useEffect, useState } from "react";
+import { defaultStyle, colors } from "../Styles/styles";
 import Header from "../Components/Header";
 import { Avatar, Button } from "react-native-paper";
-import SearchModel from "../Components/SearchModel";
+import SearchModal from "../Components/SearchModel";
 import ProductCard from "../Components/ProductCard";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import Footer from "../Components/Footer";
 import Heading from "../Components/Heading";
-export const products = [
-  {
-    price: 2422,
-    name: "Sample1",
-    _id: "adv1",
-    stock: 23,
-    category:"Laptop",
-    images: [
-      {
-        url: "https://picsum.photos/seed/picsum/200/300",
-      },
-    ],
-  },
-  {
-    price: 2422,
-    name: "Sample1",
-    _id: "adv11",
-    stock: 23,
-    category:"Phone",
-    images: [
-      {
-        url: "https://picsum.photos/seed/picsum/200/300",
-      },
-    ],
-  },
-  {
-    price: 2422,
-    name: "Sample1",
-    _id: "adv111",
-    stock: 23,
-    category:"efqaeefqewas",
-    images: [
-      {
-        url: "https://picsum.photos/seed/picsum/200/300",
-      },
-    ],
-  },
-  {
-    price: 2422,
-    name: "Sample1",
-    _id: "adv1111",
-    stock: 23,
-    category:"efefqewas",
-    images: [
-      {
-        url: "https://picsum.photos/seed/picsum/200/300",
-      },
-    ],
-  },
-  {
-    price: 24222,
-    name: "Sample2",
-    _id: "adv2",
-    stock: 23,
-    category:"efefqes",
-    images: [
-      {
-        url: "https://picsum.photos/seed/picsum/200/300",
-      },
-    ],
-  },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { getAllProducts, getCategoryProduct } from "../Redux/Actions/ProductAction";
+import { useSetCategories } from "../Utils/hooks";
+import { Toast } from "react-native-toast-message/lib/src/Toast";
 
-const Home = () => {
-  const categories = [
-    { category: "abc", _id: "adc10" },
-    { category: "abc", _id: "adc9" },
-    { category: "abc", _id: "adc8" },
-    { category: "abc", _id: "adc7" },
-    { category: "abc", _id: "adc6" },
-    { category: "abc", _id: "adc5" },
-    { category: "abc", _id: "adc4" },
-    { category: "abc", _id: "adc3" },
-    { category: "abc", _id: "adc2" },
-    { category: "abc", _id: "adc1" },
-  ];
 
-  const [category, setCategory] = useState("");
+const Home = () => {  
+  
+  const navigate = useNavigation();
+  const dispatch = useDispatch();
+  const isFocused = useIsFocused();
+
   const [activeSearch, setActiveSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const categoryButtonHandler = (id) => {
-    setCategory(id);
-  };
-  const handleSearchToggle = () => {
-    setActiveSearch((prev) => !prev);
-  };
-  const addToCartHandler = (id) => {
-    console.log("Add to cart ", id);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+  const { products } = useSelector((state) => state.product);
+
+  const categoryButtonHandler = (categoryId) => {
+    setSelectedCategory(categoryId);
   };
 
-  const navigate = useNavigation();
+  const allProductsHandler = () => {
+    setSelectedCategory(""); // Reset selected category to empty string
+  };
 
+  const addToCardHandler = (id, name, price, image, stock) => {
+    console.log(name, price, id, stock);
+    if (stock === 0) {
+      Toast.show({
+        type: "error",
+        text1: "Out Of Stock",
+      });
+      return;
+    }
+
+    dispatch({
+      type: "addToCart",
+      payload: {
+        product: id,
+        name,
+        price,
+        image,
+        stock,
+        quantity: 1,
+      },
+    });
+
+    Toast.show({
+      type: "success",
+      text1: "Added To Cart",
+    });
+  };
+
+  useSetCategories(setCategories, isFocused);
+
+  useEffect(() => {
+    if (selectedCategory !== "") {
+      dispatch(getCategoryProduct(searchQuery, selectedCategory)); // Fetch category-specific products
+    } else {
+      dispatch(getAllProducts(searchQuery)); // Fetch all products
+    }
+  }, [dispatch, searchQuery, selectedCategory, isFocused]);
   return (
     <>
       {activeSearch && (
-        <SearchModel
+        <SearchModal
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           setActiveSearch={setActiveSearch}
           products={products}
         />
       )}
+
       <View style={defaultStyle}>
-        {/* header-bar */}
         <Header />
+
+        {/* Heading Row */}
         <View
           style={{
-            paddingTop: 50,
+            paddingTop: 70,
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
           }}
         >
-          {/* heading  */}
+          {/* Heading */}
           <Heading text1="Our" text2="Products" />
-          {/* search bar */}
+
+          {/* Search Bar */}
           <View>
-            <TouchableOpacity onPress={handleSearchToggle}>
+            <TouchableOpacity onPress={() => setActiveSearch((prev) => !prev)}>
               <Avatar.Icon
-                icon={"magnify"}
-                color={"gray"}
-                size={45}
-                style={{ backgroundColor: colors.color2, elevation: 6 }}
+                icon="magnify"
+                size={50}
+                color="gray"
+                style={{ backgroundColor: colors.color2, elevation: 12 }}
               />
             </TouchableOpacity>
           </View>
         </View>
+
+        {/* Categories */}
         <View
           style={{
             flexDirection: "row",
@@ -148,12 +125,33 @@ const Home = () => {
             }}
             showsHorizontalScrollIndicator={false}
           >
-            {categories.map((item, index) => (
+            <Button
+              style={{
+                backgroundColor:
+                  selectedCategory === "" ? colors.color1 : colors.color5,
+                borderRadius: 100,
+                margin: 5,
+              }}
+              onPress={allProductsHandler}
+            >
+              <Text
+                style={{
+                  fontSize: 12,
+                  color: selectedCategory === "" ? colors.color2 : "gray",
+                }}
+              >
+                All Products
+              </Text>
+            </Button>
+
+            {categories.map((item) => (
               <Button
                 key={item._id}
                 style={{
                   backgroundColor:
-                    category === item._id ? colors.color1 : colors.color5,
+                    selectedCategory === item._id
+                      ? colors.color1
+                      : colors.color5,
                   borderRadius: 100,
                   margin: 5,
                 }}
@@ -161,8 +159,11 @@ const Home = () => {
               >
                 <Text
                   style={{
-                    color: category === item._id ? colors.color2 : "gray",
                     fontSize: 12,
+                    color:
+                      selectedCategory === item._id
+                        ? colors.color2
+                        : "gray",
                   }}
                 >
                   {item.category}
@@ -171,25 +172,27 @@ const Home = () => {
             ))}
           </ScrollView>
         </View>
+
+        {/* Products */}
         <View style={{ flex: 1 }}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {products.map((item, index) => (
+            {products.map((item) => (
               <ProductCard
-                stock={item.stock}
+                key={item._id}
+                id={item._id}
                 name={item.name}
                 price={item.price}
-                images={item.images}
-                addToCartHandler={addToCartHandler}
-                id={item._id}
-                key={item._id}
-                i={index}
+                image={item.images[0]?.url}
+                stock={item.stock}
+                addToCardHandler={addToCardHandler}
                 navigate={navigate}
               />
             ))}
           </ScrollView>
         </View>
       </View>
-      <Footer activeRoute={"home"} />
+
+      <Footer activeRoute="home" />
     </>
   );
 };

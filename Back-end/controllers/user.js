@@ -128,52 +128,70 @@ export const updatePic = asyncError(async (req, res, next) => {
      message:"Avatar updated successfully"
     });
 });
-
 export const forgetPassword = asyncError(async (req, res, next) => {
-    const {email} =req.body;
-    const user = await User.findOne({ email });
-    if(!user) return next(new errorHanlder("Incorrect email",404));
-    const randomNumber = Math.random()*(999999-100000)+100000;
-    const otp = Math.floor(randomNumber);
-    const otp_expire = 1000*60*10;
-    user.otp = otp;
-    user.otp_expire = new Date(Date.now()+otp_expire);
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+
+  if (!user) return next(new errorHanlder("Incorrect Email", 404));
+  // max,min 2000,10000
+  // math.random()*(max-min)+min
+
+  const randomNumber = Math.random() * (999999 - 100000) + 100000;
+  const otp = Math.floor(randomNumber);
+  const otp_expire = 15 * 60 * 1000;
+
+  user.otp = otp;
+  user.otp_expire = new Date(Date.now() + otp_expire);
+  await user.save();
+  console.log("Hi1");
+  const message = `Your OTP for Reseting Password is ${otp}.\n Please ignore if you haven't requested this.`;
+  try {
+  console.log("Hi2");
+
+    await sendEmail("OTP For Reseting Password", user.email, message);
+  console.log("Hi3");
+
+  } catch (error) {
+  console.log("Hi4");
+
+    user.otp = null;
+    user.otp_expire = null;
     await user.save();
-    console.log(otp);
-    const message = `Your OTP for reseting password is ${otp} and It will expire in 10 minutes, Please ignore if you didn't request for reseting password`;
-    try{
-      console.log(user.email);
-      await sendEmail("Otp for reseting password",user.email,message);
-    }catch(error){
-      console.log(error);
-      user.otp = null;
-      user.otp_expire = null;
-      await user.save();
-      return next(error);
-    }
-    
-    res.status(200).json({
-      success: true,
-      message:`Email sent to ${user.email}`
-    })
+    return next(error);
+  }
+  console.log("Hi5");
+
+  res.status(200).json({
+    success: true,
+    message: `Email Sent To ${user.email}`,
+  });
 });
 
 export const resetPassword = asyncError(async (req, res, next) => {
-  const {otp,password} = req.body;
+  const { otp, password } = req.body;
 
-  const user = await User.findOne({otp,otp_expire:{$gt:Date.now()}});
+  const user = await User.findOne({
+    otp,
+    otp_expire: {
+      $gt: Date.now(),
+    },
+  });
 
-  if(!user) return next(new errorHanlder("Invalid OTP or OTP has been expireed",400));
+  if (!user)
+    return next(new errorHanlder("Incorrect OTP or has been expired", 400));
+
+  if (!password)
+    return next(new errorHanlder("Please Enter New Password", 400));
 
   user.password = password;
   user.otp = undefined;
-  user.password_expire = undefined;
+  user.otp_expire = undefined;
 
   await user.save();
 
   res.status(200).json({
-    success : true,
-    message : "Password reset successfully you can login now"
+    success: true,
+    message: "Password Changed Successfully, You can login now",
   });
-
 });
+

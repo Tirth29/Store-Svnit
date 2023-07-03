@@ -9,13 +9,12 @@ import {
 } from "../Styles/styles";
 import { Button, TextInput } from "react-native-paper";
 import Header from "../Components/Header";
-// import { useDispatch, useSelector } from "react-redux";
-// import { updateProfile } from "../redux/actions/otherAction";
-// import { useMessageAndErrorOther } from "../utils/hooks";
+import { useDispatch, useSelector } from "react-redux";
+import { updateProfile } from "../Redux/Actions/OtherAction";
+import { useMessageAndErrorOther } from "../Utils/hooks";
 
 const UpdateProfile = ({ navigation }) => {
-//   const { user } = useSelector((state) => state.user);
-    const {user}=useState("");
+  const { user } = useSelector((state) => state.user);
   const [name, setName] = useState(user?.name);
   const [email, setEmail] = useState(user?.email);
   const [address, setAddress] = useState(user?.address);
@@ -23,12 +22,12 @@ const UpdateProfile = ({ navigation }) => {
   const [country, setCountry] = useState(user?.country);
   const [pinCode, setPinCode] = useState(user?.pinCode.toString());
 
-//   const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-//   const loading = useMessageAndErrorOther(dispatch, navigation, "profile");
+  const loading = useMessageAndErrorOther(dispatch, navigation, "profile");
 
   const submitHandler = () => {
-    // dispatch(updateProfile(name, email, address, city, country, pinCode));
+    dispatch(updateProfile(name, email, address, city, country, pinCode));
   };
   return (
     <View style={defaultStyle}>
@@ -91,7 +90,7 @@ const UpdateProfile = ({ navigation }) => {
           />
 
           <Button
-            // loading={loading}
+            loading={loading}
             textColor={colors.color2}
             style={styles.btn}
             onPress={submitHandler}

@@ -4,10 +4,11 @@ import { useNavigation } from "@react-navigation/native";
 import { colors } from "../Styles/styles";
 import { TouchableOpacity } from "react-native";
 import { Avatar } from "react-native-paper";
+import { useSelector } from "react-redux";
 
 const Footer = ({ activeRoute = "home" }) => {
   const navigate = useNavigation();
-  const isAuthenticated = true;
+  const {loading , isAuthenticated} = useSelector(state => state.user);
   const navigationHandler = (key) => {
     switch (key) {
       case 0:
@@ -35,13 +36,16 @@ const Footer = ({ activeRoute = "home" }) => {
       backgroundColor: colors.color1,
     },
   };
-  return (
-    <View
+  return ( loading===false && (
+     <View
       style={{
         backgroundColor: colors.color1,
         borderTopRightRadius: 100,
         borderTopLeftRadius: 100,
         height: 50,
+        position:"absolute",
+        width:"100%",
+        bottom:0,
       }}
     >
       <View
@@ -120,7 +124,7 @@ const Footer = ({ activeRoute = "home" }) => {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </View>)
   );
 };
 

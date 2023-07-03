@@ -4,32 +4,31 @@ import { colors, defaultStyle, formHeading, inputOptions } from "../Styles/style
 import Header from "../Components/Header";
 import CategoryCard from "../Components/CategoryCard";
 import { Button, TextInput } from "react-native-paper";
-const categories = [
-    {
-        _id:"1",
-        name:"abc",
-    },
-    {
-        _id:"12",
-        name:"ac",
-    },
-    {
-        _id:"123",
-        name:"ab",
-    },
-    {
-        _id:"121",
-        name:"abcd",
-    },
-];
+import { useIsFocused } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
+import { useMessageAndErrorOther, useSetCategories } from "../Utils/hooks";
+import { addCategory, deleteCategory } from "../Redux/Actions/OtherAction";
 
-const Category = () => {
-    const deleteHandler = (id)=>{
-        console.log(`delete with ID : ${id}`);
-    };
-    const [category, setCategory] = useState("");
-    const loading = false;
-    const submitHandler = ()=>{};
+
+
+const Category = ({navigation}) => {
+  const [category, setCategory] = useState("");
+  const [categories, setCategories] = useState([]);
+
+  const isFocused = useIsFocused();
+  const dispatch = useDispatch();
+
+  useSetCategories(setCategories, isFocused);
+
+  const loading = useMessageAndErrorOther(dispatch, navigation, "adminpanel");
+
+  const deleteHandler = (id) => {
+    dispatch(deleteCategory(id));
+  };
+
+  const submitHandler = () => {
+    dispatch(addCategory(category));
+  };
   return (
     <View
       style={{
@@ -55,7 +54,7 @@ const Category = () => {
         >
           {categories.map((i) => (
             <CategoryCard
-              name={i.name}
+              name={i.category}
               id={i._id}
               key={i._id}
               deleteHandler={deleteHandler}

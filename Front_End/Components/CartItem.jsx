@@ -5,15 +5,15 @@ import { Avatar } from "react-native-paper";
 import { iconOptions } from "../Screens/ProductDetails";
 
 const CartItem = ({
-  name,
-  amount,
-  qty,
-  stock,
-  index,
-  imgSrc,
   id,
+  name,
+  price,
+  imgSrc,
+  stock,
+  qty,
+  index,
   decrementHandler,
-  incrementhandler,
+  incrementHandler,
   navigate,
 }) => {
   return (
@@ -62,13 +62,13 @@ const CartItem = ({
             fontWeight: "900",
           }}
         >
-          ₹{amount}
+          ₹{price}
         </Text>
       </View>
 
       <View style={styles.qtyContainer}>
         <TouchableOpacity
-          onPress={() => decrementHandler(id, name, amount, imgSrc, stock, qty)}
+          onPress={() => decrementHandler(id, name, price, imgSrc, stock, qty)}
         >
           <Avatar.Icon icon={"minus"} {...iconOptions} />
         </TouchableOpacity>
@@ -76,7 +76,7 @@ const CartItem = ({
         <Text style={styles.qtyText}>{qty}</Text>
 
         <TouchableOpacity
-          onPress={() => incrementhandler(id, name, amount, imgSrc, stock, qty)}
+          onPress={() => incrementHandler(id, name, price, imgSrc, stock, qty)}
         >
           <Avatar.Icon icon={"plus"} {...iconOptions} />
         </TouchableOpacity>
